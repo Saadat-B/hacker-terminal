@@ -1,5 +1,11 @@
 'use client';
 
+// Define the WebKit interface
+interface WindowWithWebkitAudio extends Window {
+  AudioContext: typeof AudioContext;
+  webkitAudioContext?: typeof AudioContext;
+}
+
 /**
  * Simple sound player that doesn't rely on external audio files
  */
@@ -15,7 +21,8 @@ export class SoundManager {
     
     if (typeof window !== 'undefined') {
       try {
-        this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const windowWithAudio = window as WindowWithWebkitAudio;
+        this.audioContext = new (windowWithAudio.AudioContext || windowWithAudio.webkitAudioContext)();
         this.isInitialized = true;
       } catch (e) {
         console.error('Web Audio API is not supported in this browser', e);
